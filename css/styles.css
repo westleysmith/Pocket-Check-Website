@@ -276,10 +276,11 @@ nav {
 }
 
 .policy-toc ol {
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  padding: 0;
+  list-style-position: inside;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
 }
 
 .policy-toc li { font-size: 0.9rem; }
