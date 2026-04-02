@@ -264,42 +264,35 @@ nav {
   padding: 28px 32px;
   margin-bottom: 52px;
   box-shadow: var(--shadow);
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
 }
 
-.policy-toc h2 {
+.toc-heading {
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-.toc-columns {
-  display: flex;
-  gap: 24px;
+.toc-table {
   width: 100%;
-  box-sizing: border-box;
+  border-collapse: collapse;
 }
 
-.toc-columns > div {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.toc-columns a {
+.toc-table td {
+  padding: 5px 0;
+  width: 50%;
   font-size: 0.9rem;
+  vertical-align: top;
+}
+
+.toc-table a {
   color: var(--text);
   text-decoration: none;
 }
 
-.toc-columns a:hover {
+.toc-table a:hover {
   color: var(--green-dark);
   text-decoration: underline;
 }
