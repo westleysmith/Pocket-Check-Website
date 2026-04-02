@@ -20,9 +20,10 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
+      align-items: stretch;
       max-width: 820px;
       margin: -40px auto 0;
-      padding: 0 24px 80px;
+      padding: 0 24px 56px;
     }
 
     .pricing-card {
@@ -31,6 +32,8 @@
       border-radius: var(--radius);
       padding: 36px 32px;
       box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
     }
 
     .pricing-card.pro {
@@ -80,16 +83,18 @@
     .pricing-desc {
       font-size: 0.88rem;
       color: var(--muted);
-      margin: 12px 0 28px;
+      margin: 12px 0 0;
       line-height: 1.5;
     }
 
     .pricing-features {
       list-style: none;
       padding: 0;
-      margin: 0 0 32px;
+      margin: 0;
       border-top: 1px solid var(--border);
-      padding-top: 24px;
+      padding-top: 20px;
+      margin-top: 24px;
+      flex: 1;
     }
 
     .pricing-features li {
@@ -98,20 +103,23 @@
       gap: 10px;
       font-size: 0.9rem;
       color: #374151;
-      padding: 6px 0;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--bg);
     }
 
-    .pricing-features li .check {
+    .pricing-features li:last-child { border-bottom: none; }
+
+    .pricing-features li.excluded { color: var(--muted); }
+
+    .feat-icon {
       flex-shrink: 0;
       width: 18px;
       height: 18px;
       margin-top: 1px;
     }
 
-    .check-green { color: var(--green-dark); }
-    .check-muted { color: #d1d5db; }
-
-    .pricing-features li.disabled { color: var(--muted); }
+    .feat-icon.yes { color: var(--green-dark); }
+    .feat-icon.no  { color: #d1d5db; }
 
     .pricing-cta {
       display: block;
@@ -124,6 +132,7 @@
       cursor: pointer;
       text-decoration: none;
       transition: all 0.2s;
+      margin-top: 28px;
     }
 
     .cta-free {
@@ -144,7 +153,6 @@
       text-align: center;
       color: var(--muted);
       font-size: 0.85rem;
-      margin-top: -48px;
       padding-bottom: 64px;
     }
 
@@ -180,43 +188,47 @@
     <div class="pricing-card">
       <div class="pricing-tier">Free</div>
       <div class="pricing-price">$0</div>
-      <p class="pricing-desc">Manual budgeting with limited AI access. No credit card required.</p>
+      <p class="pricing-desc">Manual budgeting with limited AI and Siri access. No credit card required.</p>
       <ul class="pricing-features">
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
           Manual income and budget entry
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
           Bill and expense tracking
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          Yes / No / Maybe affordability verdicts
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Yes / No / Maybe verdicts
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          3 Siri questions per week
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Siri integration (3 questions/week)
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          1 AI chat conversation (limited)
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          AI financial coach (1 conversation)
         </li>
-        <li class="disabled">
-          <svg class="check check-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        <li class="excluded">
+          <svg class="feat-icon no" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
           Live bank connection via Plaid
         </li>
-        <li class="disabled">
-          <svg class="check check-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          Unlimited AI financial coach
+        <li class="excluded">
+          <svg class="feat-icon no" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Real-time balances and transactions
         </li>
-        <li class="disabled">
-          <svg class="check check-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          Unlimited Siri integration
+        <li class="excluded">
+          <svg class="feat-icon no" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Spending insights and category breakdown
         </li>
-        <li class="disabled">
-          <svg class="check check-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          Real transaction history and insights
+        <li class="excluded">
+          <svg class="feat-icon no" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Bill reminders and push notifications
+        </li>
+        <li class="excluded">
+          <svg class="feat-icon no" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          Monthly summary and budget vs actual
         </li>
       </ul>
       <a href="#" class="pricing-cta cta-free">Download Free</a>
@@ -230,35 +242,43 @@
       <p class="pricing-desc">Everything in Free, plus live bank data and unlimited AI and Siri access.</p>
       <ul class="pricing-features">
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          Everything in Free
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Manual income and budget entry
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Bill and expense tracking
+        </li>
+        <li>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Yes / No / Maybe verdicts
+        </li>
+        <li>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Siri integration (unlimited)
+        </li>
+        <li>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          AI financial coach (unlimited)
+        </li>
+        <li>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
           Live bank connection via Plaid
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          Real-time balance and transaction data
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Real-time balances and transactions
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          Unlimited AI financial coach
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          Spending insights and category breakdown
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          Unlimited Siri integration
-        </li>
-        <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
-          Full spending history and category insights
-        </li>
-        <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
           Bill reminders and push notifications
         </li>
         <li>
-          <svg class="check check-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+          <svg class="feat-icon yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
           Monthly summary and budget vs actual
         </li>
       </ul>
