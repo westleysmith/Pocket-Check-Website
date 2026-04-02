@@ -264,6 +264,10 @@ nav {
   padding: 28px 32px;
   margin-bottom: 52px;
   box-shadow: var(--shadow);
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .policy-toc h2 {
@@ -278,6 +282,8 @@ nav {
 .toc-columns {
   display: flex;
   gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .toc-columns > div {
