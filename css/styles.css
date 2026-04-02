@@ -281,10 +281,15 @@ nav {
 }
 
 .toc-table td {
-  padding: 5px 0;
+  padding: 6px 16px 6px 0;
   width: 50%;
   font-size: 0.9rem;
   vertical-align: top;
+}
+
+.toc-table td:last-child {
+  padding-left: 24px;
+  border-left: 1px solid var(--border);
 }
 
 .toc-table a {
