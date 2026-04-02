@@ -267,23 +267,37 @@ nav {
 }
 
 .policy-toc h2 {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--muted);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
-.policy-toc ol {
-  padding-left: 20px;
-  columns: 2;
-  column-gap: 32px;
+.toc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.policy-toc li { font-size: 0.9rem; }
-.policy-toc a { color: var(--text); }
-.policy-toc a:hover { color: var(--green-dark); }
+.toc-chips a {
+  display: inline-block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.toc-chips a:hover {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--navy);
+}
 
 .policy-section { margin-bottom: 52px; }
 
