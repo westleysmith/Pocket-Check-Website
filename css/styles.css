@@ -275,28 +275,27 @@ nav {
   margin-bottom: 16px;
 }
 
-.toc-chips {
+.toc-columns {
   display: flex;
-  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.toc-columns > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.toc-chips a {
-  display: inline-block;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-size: 0.85rem;
+.toc-columns a {
+  font-size: 0.9rem;
   color: var(--text);
   text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
-.toc-chips a:hover {
-  background: var(--green);
-  border-color: var(--green);
-  color: var(--navy);
+.toc-columns a:hover {
+  color: var(--green-dark);
+  text-decoration: underline;
 }
 
 .policy-section { margin-bottom: 52px; }
