@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Information Security Policy | Pocket Check</title>
+  <meta name="description" content="Pocket Check LLC Information Security Policy: how we protect your data and secure our systems." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-brand">
+      <span class="dot"></span> Pocket Check
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="privacy-policy.html">Privacy Policy</a></li>
+      <li><a href="terms-of-service.html">Terms of Service</a></li>
+    </ul>
+  </nav>
+
+  <header class="policy-header">
+    <h1>Information Security Policy</h1>
+    <div class="policy-meta">
+      <span><strong>Effective Date:</strong> April 3, 2026</span>
+      <span><strong>Last Updated:</strong> April 3, 2026</span>
+    </div>
+  </header>
+
+  <main class="policy-body">
+
+    <nav class="policy-toc" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#section-1">Overview</a></li>
+        <li><a href="#section-2">Data Transmission Security</a></li>
+        <li><a href="#section-3">Data Storage Security</a></li>
+        <li><a href="#section-4">Access Controls</a></li>
+        <li><a href="#section-5">Third-Party Security</a></li>
+        <li><a href="#section-6">Incident Response</a></li>
+        <li><a href="#section-7">Your Role in Security</a></li>
+        <li><a href="#section-8">Limitations</a></li>
+        <li><a href="#section-9">Changes to This Policy</a></li>
+        <li><a href="#section-10">Contact Us</a></li>
+      </ol>
+    </nav>
+
+    <p style="color:#374151; margin-bottom: 48px;">
+      This Information Security Policy describes the technical and organizational measures Pocket Check LLC ("we," "us," or "our") uses to protect the data you share with us through the Pocket Check mobile application (the "App"). This policy supplements our <a href="privacy-policy.html">Privacy Policy</a>.
+    </p>
+
+    <!-- Section 1 -->
+    <div class="policy-section" id="section-1">
+      <h2>1. Overview</h2>
+      <p>Security is a core principle of how Pocket Check is built. Because we handle sensitive financial data, we apply a defense-in-depth approach — multiple layers of security controls designed to protect your information even if any single control fails.</p>
+      <p>Our security design is guided by three principles:</p>
+      <ul>
+        <li><strong>Minimal data collection:</strong> We only collect what is necessary to deliver the service</li>
+        <li><strong>Local-first storage:</strong> Sensitive financial data lives on your device, not our servers</li>
+        <li><strong>Read-only access:</strong> We cannot move, modify, or transact on your bank accounts under any circumstances</li>
+      </ul>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="policy-section" id="section-2">
+      <h2>2. Data Transmission Security</h2>
+      <p>All data transmitted between the App and our backend servers, and between our servers and third-party services, is protected by:</p>
+      <ul>
+        <li>TLS (Transport Layer Security) encryption on all network connections</li>
+        <li>Certificate validation to prevent man-in-the-middle attacks</li>
+        <li>HTTPS enforced on all API endpoints — unencrypted HTTP connections are rejected</li>
+      </ul>
+      <p>Your bank credentials are never transmitted to Pocket Check. Authentication with your bank is handled entirely by Plaid through their secure, encrypted connection.</p>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="policy-section" id="section-3">
+      <h2>3. Data Storage Security</h2>
+
+      <h3>3.1 On-Device Storage</h3>
+      <p>Financial data stored on your device is protected by:</p>
+      <ul>
+        <li>iOS encrypted secure storage (Keychain) for sensitive values</li>
+        <li>Device-level encryption enforced by iOS when your device is locked</li>
+        <li>No backup of financial data to iCloud or other cloud storage services</li>
+      </ul>
+
+      <h3>3.2 Server-Side Storage</h3>
+      <p>The only data we store on our backend is your Plaid access token and, if applicable, your push notification token. These are protected by:</p>
+      <ul>
+        <li>Encrypted storage within our Railway-hosted database</li>
+        <li>Environment-level access controls restricting who and what can read the database</li>
+        <li>No plaintext storage of any credentials or sensitive tokens</li>
+      </ul>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="policy-section" id="section-4">
+      <h2>4. Access Controls</h2>
+      <p>Access to systems and data that power Pocket Check is strictly limited:</p>
+      <ul>
+        <li>Server infrastructure access is restricted to authorized personnel only</li>
+        <li>All administrative access requires strong authentication</li>
+        <li>Our backend API enforces authentication on all endpoints that access user data</li>
+        <li>API keys and secrets are stored as environment variables, never hardcoded in source code</li>
+        <li>Access permissions follow the principle of least privilege — each system component can only access what it needs</li>
+      </ul>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="policy-section" id="section-5">
+      <h2>5. Third-Party Security</h2>
+      <p>We carefully select third-party services and hold them to security standards consistent with our own:</p>
+
+      <div class="third-party-card">
+        <h4>Plaid Technologies, Inc.</h4>
+        <p>Plaid is a SOC 2 Type II certified financial data provider. They use bank-grade encryption and never share your login credentials with Pocket Check. Plaid's security practices are described at <a href="https://plaid.com/safety" target="_blank" rel="noopener">plaid.com/safety</a>.</p>
+      </div>
+
+      <div class="third-party-card">
+        <h4>Anthropic (Claude AI)</h4>
+        <p>Chat messages and financial context sent to Anthropic's API are transmitted over encrypted connections. Anthropic does not retain request data beyond the duration of each API call. Learn more at <a href="https://anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a>.</p>
+      </div>
+
+      <div class="third-party-card">
+        <h4>Railway</h4>
+        <p>Our backend is hosted on Railway, which provides infrastructure-level security including encrypted storage and network isolation. Learn more at <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener">railway.app/legal/privacy</a>.</p>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="policy-section" id="section-6">
+      <h2>6. Incident Response</h2>
+      <p>In the event of a security incident that affects your data:</p>
+      <ul>
+        <li>We will investigate and contain the incident as quickly as possible</li>
+        <li>We will notify affected users within a reasonable timeframe, consistent with applicable law</li>
+        <li>We will take steps to prevent recurrence and improve our controls</li>
+      </ul>
+      <p>To report a suspected security vulnerability or incident, contact us immediately at <a href="mailto:pocketcheckapp@gmail.com">pocketcheckapp@gmail.com</a>. We take all security reports seriously and will respond promptly.</p>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="policy-section" id="section-7">
+      <h2>7. Your Role in Security</h2>
+      <p>Security is a shared responsibility. You can help protect your data by:</p>
+      <ul>
+        <li>Keeping your device's operating system and the Pocket Check app up to date</li>
+        <li>Using a strong device passcode or biometric authentication</li>
+        <li>Not sharing your device with others while the App is open</li>
+        <li>Disconnecting your bank account from within the App if you change devices or sell your phone</li>
+        <li>Reporting any unusual behavior in the App to us promptly</li>
+      </ul>
+    </div>
+
+    <!-- Section 8 -->
+    <div class="policy-section" id="section-8">
+      <h2>8. Limitations</h2>
+      <p>Despite our best efforts, no security system is perfect. We cannot guarantee absolute security of data transmitted over the internet or stored on electronic systems. By using the App, you acknowledge this inherent risk.</p>
+      <p>We are not responsible for security breaches caused by factors outside our reasonable control, including failures in third-party infrastructure, vulnerabilities in the iOS operating system, or unauthorized access to your physical device.</p>
+    </div>
+
+    <!-- Section 9 -->
+    <div class="policy-section" id="section-9">
+      <h2>9. Changes to This Policy</h2>
+      <p>We may update this policy from time to time to reflect changes in our practices or applicable law. When we do, we will update the "Last Updated" date at the top of this page. For significant changes, we will notify you through the App.</p>
+    </div>
+
+    <!-- Section 10 -->
+    <div class="policy-section" id="section-10">
+      <h2>10. Contact Us</h2>
+      <p>If you have questions about our security practices or want to report a vulnerability, please contact us:</p>
+      <div class="contact-box">
+        <h3>Pocket Check LLC</h3>
+        <p>Email: <a href="mailto:pocketcheckapp@gmail.com">pocketcheckapp@gmail.com</a></p>
+        <p>Website: <a href="https://pocketcheck.app" target="_blank" rel="noopener">pocketcheck.app</a></p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="support.html">Support</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+      <a href="data-retention-policy.html">Data Retention Policy</a>
+      <a href="information-security-policy.html">Information Security Policy</a>
+    </div>
+    <div class="footer-socials">
+      <a href="https://instagram.com/pocketcheckapp" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://x.com/pocketcheckapp" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      </a>
+      <a href="https://tiktok.com/@pocketcheckapp" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.79a4.85 4.85 0 01-1.02-.1z"/></svg>
+      </a>
+      <a href="https://reddit.com/u/pocketcheckapp" target="_blank" rel="noopener" aria-label="Reddit">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+      </a>
+      <a href="mailto:pocketcheckapp@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+    </div>
+    <p>&copy; 2026 Pocket Check LLC. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
