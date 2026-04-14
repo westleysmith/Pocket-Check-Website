@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "RRLYJCSQ46.com.westleysmith.pocketcheck",
+        "paths": ["/plaid-oauth", "/plaid-oauth*"]
+      }
+    ]
+  }
+}

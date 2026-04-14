@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Returning to Pocket Check</title>
+  <meta name="description" content="Finishing your bank connection in the Pocket Check app." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <section class="hero" style="min-height:60vh;">
+    <div class="hero-badge">Almost done</div>
+    <h1>Returning to<br>Pocket <span>Check.</span></h1>
+    <p id="msg">If the app doesn't open automatically, tap the button below to finish connecting your bank.</p>
+    <a id="openApp" href="#" class="btn btn-primary">Open Pocket Check</a>
+    <p style="margin-top:24px;font-size:13px;opacity:0.55;">Don't have the app? You can close this page — the bank connection was recorded and will be picked up the next time you open Pocket Check.</p>
+  </section>
+
+  <script>
+    (function () {
+      // Forward the full OAuth query string to the custom scheme so the Plaid
+      // Link SDK can resume exactly where the user left off. On iOS, the
+      // universal link handler in Info.plist intercepts the original https://
+      // URL before this page ever renders -- this fallback only runs when
+      // universal links aren't working (older iOS, wrong device, etc).
+      var search = window.location.search || '';
+      var deepLink = 'pocketcheck://plaid-oauth' + search;
+      var btn = document.getElementById('openApp');
+      btn.setAttribute('href', deepLink);
+
+      // Auto-attempt the deep link on mobile.
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        setTimeout(function () { window.location.href = deepLink; }, 50);
+      }
+    })();
+  </script>
+</body>
+</html>
