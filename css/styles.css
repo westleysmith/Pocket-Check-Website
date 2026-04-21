@@ -523,6 +523,100 @@ footer .footer-socials svg { width: 20px; height: 20px; }
 }
 .suffix-wrap input[type="number"] { padding-right: 32px !important; }
 
+/* --- Select inputs (for Advanced mode Filing Status) --- */
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--white);
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.field select:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
+}
+
+/* --- Advanced toggle switch --- */
+.advanced-toggle-row {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.advanced-toggle-hint {
+  flex: 1;
+  margin: 0;
+  font-size: 0.85rem;
+  min-width: 250px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #c8ccd2;
+  border-radius: 100px;
+  transition: background 0.2s;
+}
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: var(--white);
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.toggle-switch input:checked ~ .toggle-slider {
+  background: var(--green);
+}
+.toggle-switch input:checked ~ .toggle-slider::after {
+  transform: translateX(20px);
+}
+.toggle-switch input:focus-visible ~ .toggle-slider {
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.25);
+}
+
+.toggle-label {
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.95rem;
+}
+
 /* --- Risk buttons --- */
 .risk-buttons {
   display: flex;
@@ -556,6 +650,20 @@ footer .footer-socials svg { width: 20px; height: 20px; }
   color: var(--navy);
   border-color: var(--green);
   box-shadow: 0 2px 10px rgba(46, 204, 113, 0.2);
+}
+
+.risk-btn .outlook-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.risk-btn .outlook-nums {
+  display: block;
+  font-size: 0.72rem;
+  opacity: 0.7;
+  font-weight: 500;
+  margin-top: 2px;
+  letter-spacing: 0.02em;
 }
 
 /* --- Career table --- */
@@ -897,6 +1005,14 @@ footer .footer-socials svg { width: 20px; height: 20px; }
     background: #0a1420;
     border-color: #1f3449;
   }
+  .field select {
+    background-color: #0a1420;
+    border-color: #1f3449;
+    color: #e8eef5;
+  }
+  .toggle-slider { background: #2a3a4d; }
+  .toggle-label { color: #e8eef5; }
+  .advanced-toggle-row { border-top-color: #1f3449; }
   .planner-details {
     background: #0a1420;
     border-color: #1f3449;

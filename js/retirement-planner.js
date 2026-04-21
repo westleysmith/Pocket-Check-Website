@@ -10,6 +10,28 @@
 
     const STORAGE_KEY = 'pc_retirement_planner_state_v1';
 
+    // Return outlook: the MEAN real return per asset class. Std dev
+    // and stock/bond correlation stay at historical values regardless
+    // - only the mean shifts. "Historical" matches the last century of
+    // US data; "Forward-looking" is the consensus of current
+    // professional forecasts (Vanguard VCMM, Research Affiliates, GMO)
+    // given today's valuations; "Cautious" models a permanently
+    // lower-return regime.
+    const RETURN_OUTLOOK_PRESETS = {
+        Historical: {
+            stocks: 0.068, bonds: 0.020, cash: 0.003,
+            description: "20th-century US historical averages. What the last 100 years delivered. Arguably optimistic relative to today's valuations.",
+        },
+        'Forward-looking': {
+            stocks: 0.045, bonds: 0.020, cash: 0.003,
+            description: "Consensus of professional forward forecasts (Vanguard VCMM, Research Affiliates, GMO) given current market valuations. What most retirement planners use.",
+        },
+        Cautious: {
+            stocks: 0.030, bonds: 0.010, cash: 0.000,
+            description: "If forward returns disappoint and the next few decades look more like Japan since 1990 or the US in the 2000s.",
+        },
+    };
+
     const RISK_PRESETS = {
         Conservative: {
             now:        { stocks: 0.50, bonds: 0.45, cash: 0.05 },
@@ -46,6 +68,13 @@
             { start_age: 35, title: 'Senior',      salary: 140000, contribution_pct: 0.20, employer_match_pct: 0.05 },
         ],
         num_simulations: 10000,
+        // ---- Advanced mode fields (Phase 2) ----
+        advanced_mode: false,
+        filing_status: 'single',     // 'single' | 'mfj'
+        state_tax_rate: 0,           // 0-0.15 as a fraction
+        fee_pct: 0.0005,             // default 0.05% (low-cost index fund)
+        ss_pia_annual: 0,            // 0 = use basic social_security_annual as-is
+        return_outlook: 'Historical',// key into RETURN_OUTLOOK_PRESETS
     };
 
     let state = loadState();
@@ -98,11 +127,16 @@
             const scale = parseFloat(el.dataset.scale || '1');
             const initial = state[key];
             if (initial !== undefined && initial !== null) {
-                el.value = (el.type === 'number' || el.type === 'range')
-                    ? (initial * scale)
-                    : initial;
+                if (el.type === 'number' || el.type === 'range') {
+                    el.value = initial * scale;
+                } else if (el.tagName === 'SELECT') {
+                    el.value = initial;
+                } else {
+                    el.value = initial;
+                }
             }
-            el.addEventListener('input', () => {
+            const evt = (el.tagName === 'SELECT') ? 'change' : 'input';
+            el.addEventListener(evt, () => {
                 if (el.type === 'number' || el.type === 'range') {
                     const parsed = parseFloat(el.value);
                     state[key] = (isNaN(parsed) ? 0 : parsed) / scale;
@@ -110,9 +144,68 @@
                     state[key] = el.value;
                 }
                 enforceAgeConstraints();
+                updateSsBenefitPreview();
                 saveState();
             });
         });
+    }
+
+    function renderReturnOutlook() {
+        const container = document.getElementById('outlook-buttons');
+        const descEl = document.getElementById('outlook-description');
+        if (!container) return;
+        container.innerHTML = '';
+        Object.keys(RETURN_OUTLOOK_PRESETS).forEach((name) => {
+            const preset = RETURN_OUTLOOK_PRESETS[name];
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'risk-btn' + (state.return_outlook === name ? ' active' : '');
+            btn.innerHTML = `<span class="outlook-name">${name}</span>`
+                + `<span class="outlook-nums">${(preset.stocks * 100).toFixed(1)}% / ${(preset.bonds * 100).toFixed(1)}% / ${(preset.cash * 100).toFixed(1)}%</span>`;
+            btn.addEventListener('click', () => {
+                state.return_outlook = name;
+                renderReturnOutlook();
+                saveState();
+            });
+            container.appendChild(btn);
+        });
+        if (descEl) {
+            descEl.textContent = RETURN_OUTLOOK_PRESETS[state.return_outlook].description;
+        }
+    }
+
+    function bindAdvancedToggle() {
+        const toggle = document.getElementById('advanced-toggle');
+        const section = document.getElementById('advanced-section');
+        if (!toggle || !section) return;
+        toggle.checked = !!state.advanced_mode;
+        section.hidden = !state.advanced_mode;
+        toggle.addEventListener('change', () => {
+            state.advanced_mode = toggle.checked;
+            section.hidden = !state.advanced_mode;
+            saveState();
+        });
+    }
+
+    // Live preview of the SS benefit applied given the current PIA and
+    // claim age, so the user can see "claim at 62 = $17,500" vs
+    // "claim at 70 = $31,000" before running the sim.
+    function updateSsBenefitPreview() {
+        const el = document.getElementById('ss-benefit-preview');
+        if (!el) return;
+        const pia = parseFloat(state.ss_pia_annual) || 0;
+        if (pia <= 0 || !state.advanced_mode) {
+            el.textContent = 'Your benefit at full retirement age (67). Claiming earlier reduces it, waiting until 70 increases it. Leave 0 to use the basic "Social Security (annual)" input as-is.';
+            return;
+        }
+        const mult = (window.RetirementSim && window.RetirementSim.ssBenefitMultiplier)
+            ? window.RetirementSim.ssBenefitMultiplier(state.social_security_claim_age)
+            : 1;
+        const effective = Math.round(pia * mult);
+        el.textContent =
+            `At claim age ${state.social_security_claim_age}, this translates to `
+            + `about ${fmtMoney(effective)} per year (`
+            + `${Math.round(mult * 100)}% of your PIA at FRA).`;
     }
 
     function enforceAgeConstraints() {
@@ -243,6 +336,17 @@
         applyRiskProfile();
         inputs.allocation_now = deepClone(state.allocation_now);
         inputs.allocation_at_retirement = deepClone(state.allocation_at_retirement);
+        // Return outlook only takes effect when advanced mode is on;
+        // basic mode uses the engine's default (Historical) means.
+        if (state.advanced_mode) {
+            const outlook = RETURN_OUTLOOK_PRESETS[state.return_outlook]
+                || RETURN_OUTLOOK_PRESETS.Historical;
+            inputs.return_means = {
+                stocks: outlook.stocks,
+                bonds:  outlook.bonds,
+                cash:   outlook.cash,
+            };
+        }
         return inputs;
     }
 
@@ -424,9 +528,12 @@
     document.addEventListener('DOMContentLoaded', () => {
         applyRiskProfile();
         bindSimpleInputs();
+        bindAdvancedToggle();
         enforceAgeConstraints();
         renderRiskProfile();
+        renderReturnOutlook();
         renderCareerTable();
+        updateSsBenefitPreview();
         document.getElementById('run-btn').addEventListener('click', onRun);
         document.getElementById('add-stage-btn').addEventListener('click', addCareerStage);
         document.getElementById('reset-btn').addEventListener('click', resetToDefaults);

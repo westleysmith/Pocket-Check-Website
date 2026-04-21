@@ -229,6 +229,17 @@
     function runSimulation(inputs) {
         const nSims = inputs.num_simulations || 10000;
         const advanced = !!inputs.advanced_mode;
+
+        // Allow inputs to override the default asset-class mean returns
+        // (used by the Advanced "Return outlook" picker). Std dev and
+        // correlation stay at historical values since those are more
+        // stable than means over regimes.
+        const model = Object.assign({}, RETURN_MODEL);
+        if (inputs.return_means) {
+            if (typeof inputs.return_means.stocks === 'number') model.stockMean = inputs.return_means.stocks;
+            if (typeof inputs.return_means.bonds  === 'number') model.bondMean  = inputs.return_means.bonds;
+            if (typeof inputs.return_means.cash   === 'number') model.cashMean  = inputs.return_means.cash;
+        }
         const filingStatus = (inputs.filing_status === 'mfj') ? 'mfj' : 'single';
         const stateTaxRate = advanced ? (inputs.state_tax_rate || 0) : 0;
         const feePct = advanced ? (inputs.fee_pct || 0) : 0;
@@ -270,7 +281,7 @@
                 inputs.allocation_at_retirement,
                 age, inputs.current_age, inputs.retirement_age
             );
-            sampleAssetReturns(nSims, stockR, bondR, cashR, RETURN_MODEL, feePct);
+            sampleAssetReturns(nSims, stockR, bondR, cashR, model, feePct);
 
             // Apply growth multiplicatively via lognormal
             for (let s = 0; s < nSims; s++) {

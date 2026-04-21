@@ -108,6 +108,71 @@
       <p class="caption" id="risk-description"></p>
       <p class="caption" id="risk-now"></p>
       <p class="caption" id="risk-retirement"></p>
+
+      <div class="advanced-toggle-row">
+        <label class="toggle-switch">
+          <input type="checkbox" id="advanced-toggle" />
+          <span class="toggle-slider"></span>
+          <span class="toggle-label">Advanced mode</span>
+        </label>
+        <span class="caption advanced-toggle-hint">Federal tax brackets, RMDs, Social Security claim-age math, and fees.</span>
+      </div>
+    </section>
+
+    <section class="planner-card advanced-section" id="advanced-section" hidden>
+      <h2>Advanced settings</h2>
+      <p class="caption">These override the basic retirement inputs when enabled. If you're early in your career and not sure about tax bracket details, the basic mode is a reasonable approximation.</p>
+
+      <h3>Return outlook</h3>
+      <p class="caption">How optimistic should the simulation be about future returns? The Monte Carlo still explores 10,000 random paths - this picks the <em>mean</em> of the distribution. Three numbers below are stock / bond / cash real return assumptions.</p>
+      <div class="risk-buttons outlook-buttons" id="outlook-buttons"></div>
+      <p class="caption" id="outlook-description"></p>
+
+      <h3>Taxes</h3>
+      <div class="field-grid">
+        <label class="field">
+          <span>Filing status</span>
+          <select data-bind="filing_status">
+            <option value="single">Single</option>
+            <option value="mfj">Married filing jointly</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>State tax rate</span>
+          <div class="suffix-wrap">
+            <input type="number" data-bind="state_tax_rate" data-scale="100" min="0" max="15" step="0.5" />
+            <span class="suffix">%</span>
+          </div>
+        </label>
+      </div>
+      <p class="caption">Replaces the basic "effective tax rate" with 2026 federal brackets plus standard deduction. Ordinary income brackets only (no separate LTCG / qualified-dividends rates yet).</p>
+
+      <h3>Portfolio fees</h3>
+      <div class="field-grid">
+        <label class="field">
+          <span>Expense ratio (fee drag)</span>
+          <div class="suffix-wrap">
+            <input type="number" data-bind="fee_pct" data-scale="100" min="0" max="3" step="0.01" />
+            <span class="suffix">%</span>
+          </div>
+        </label>
+      </div>
+      <p class="caption">Subtracted from each year's return. A typical index fund is 0.03-0.15%; a managed fund is 0.5-1.0%; an advisor adds another 0.5-1.5%.</p>
+
+      <h3>Social Security claim strategy</h3>
+      <div class="field-grid">
+        <label class="field">
+          <span>Primary insurance amount (PIA, annual)</span>
+          <div class="money-wrap">
+            <span class="money-prefix">$</span>
+            <input type="number" data-bind="ss_pia_annual" min="0" step="500" />
+          </div>
+        </label>
+      </div>
+      <p class="caption" id="ss-benefit-preview">Your benefit at full retirement age (67). Claiming earlier reduces it, waiting until 70 increases it. Leave 0 to use the basic "Social Security (annual)" input as-is.</p>
+
+      <h3>Required Minimum Distributions</h3>
+      <p class="caption">Starting at age 73, the IRS requires you to withdraw a fraction of your tax-deferred (401k/IRA) balance each year whether you need the money or not. Advanced mode applies this automatically using the IRS Uniform Lifetime Table.</p>
     </section>
 
     <section class="planner-card">
