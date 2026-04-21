@@ -33,7 +33,7 @@
     <h1>Information Security Policy</h1>
     <div class="policy-meta">
       <span><strong>Effective Date:</strong> April 3, 2026</span>
-      <span><strong>Last Updated:</strong> April 3, 2026</span>
+      <span><strong>Last Updated:</strong> April 21, 2026</span>
     </div>
   </header>
 
@@ -68,7 +68,7 @@
     </div>
 
     <p style="color:#374151; margin-bottom: 48px;">
-      This Information Security Policy describes the technical and organizational measures Pocket Check LLC ("we," "us," or "our") uses to protect the data you share with us through the Pocket Check mobile application (the "App"). This policy supplements our <a href="privacy-policy.html">Privacy Policy</a>.
+      This Information Security Policy describes the technical and organizational measures Pocket Check LLC ("we," "us," or "our") uses to protect the data you share with us through the Pocket Check mobile application (the "App"). This policy supplements our <a href="privacy-policy.html">Privacy Policy</a> and <a href="privacy-choices.html">Your Privacy Choices</a> page.
     </p>
 
     <!-- Section 1 -->
@@ -77,9 +77,9 @@
       <p>Security is a core principle of how Pocket Check is built. Because we handle sensitive financial data, we apply a defense-in-depth approach — multiple layers of security controls designed to protect your information even if any single control fails.</p>
       <p>Our security design is guided by three principles:</p>
       <ul>
-        <li><strong>Minimal data collection:</strong> We only collect what is necessary to deliver the service</li>
-        <li><strong>Local-first storage:</strong> Sensitive financial data lives on your device, not our servers</li>
-        <li><strong>Read-only access:</strong> We cannot move, modify, or transact on your bank accounts under any circumstances</li>
+        <li><strong>Minimal data collection:</strong> We only collect and retain what is necessary to deliver the service</li>
+        <li><strong>Encryption everywhere:</strong> Your data is encrypted in transit between the App, our backend, and our database, and encrypted at rest in our database</li>
+        <li><strong>Read-only bank access:</strong> We cannot move, modify, or transact on your bank accounts under any circumstances</li>
       </ul>
     </div>
 
@@ -99,20 +99,22 @@
     <div class="policy-section" id="section-3">
       <h2>3. Data Storage Security</h2>
 
-      <h3>3.1 On-Device Storage</h3>
-      <p>Financial data stored on your device is protected by:</p>
+      <h3>3.1 Server-Side Storage</h3>
+      <p>Your account, Plaid access tokens, synced transactions, budgets, bills, savings goals, custom categories, rules, and income sources are stored in our Supabase-hosted database (US region). This data is protected by:</p>
       <ul>
-        <li>iOS encrypted secure storage (Keychain) for sensitive values</li>
-        <li>Device-level encryption enforced by iOS when your device is locked</li>
-        <li>No backup of financial data to iCloud or other cloud storage services</li>
+        <li>AES-256 encryption at rest, managed by our hosting provider</li>
+        <li>Row-level security policies that scope every read and write to the signed-in user's own data</li>
+        <li>Passwords stored as bcrypt hashes; OAuth sign-ins use provider-issued identifiers, never your provider password</li>
+        <li>Access tokens (Plaid) stored only in their hashed/encrypted form and never exposed to the client</li>
+        <li>Short-lived session tokens for app authentication, rotated on sign-in</li>
       </ul>
 
-      <h3>3.2 Server-Side Storage</h3>
-      <p>The only data we store on our backend is your Plaid access token and, if applicable, your push notification token. These are protected by:</p>
+      <h3>3.2 On-Device Storage</h3>
+      <p>Your device holds a cache of recent data plus your active session. It is protected by:</p>
       <ul>
-        <li>Encrypted storage within our Railway-hosted database</li>
-        <li>Environment-level access controls restricting who and what can read the database</li>
-        <li>No plaintext storage of any credentials or sensitive tokens</li>
+        <li>iOS encrypted secure storage (Keychain) for the session token</li>
+        <li>Device-level encryption enforced by iOS when your device is locked</li>
+        <li>Clearable at any time from the App's Settings screen without affecting your server-side data</li>
       </ul>
     </div>
 
@@ -145,8 +147,13 @@
       </div>
 
       <div class="third-party-card">
+        <h4>Supabase</h4>
+        <p>Our user database and authentication layer run on Supabase (US region). Supabase is SOC 2 Type II certified, encrypts data at rest with AES-256, and enforces row-level security so each user can only read their own records. Learn more at <a href="https://supabase.com/security" target="_blank" rel="noopener">supabase.com/security</a>.</p>
+      </div>
+
+      <div class="third-party-card">
         <h4>Railway</h4>
-        <p>Our backend is hosted on Railway, which provides infrastructure-level security including encrypted storage and network isolation. Learn more at <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener">railway.app/legal/privacy</a>.</p>
+        <p>Our backend server is hosted on Railway, which provides infrastructure-level security including encrypted storage and network isolation. Learn more at <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener">railway.app/legal/privacy</a>.</p>
       </div>
     </div>
 
