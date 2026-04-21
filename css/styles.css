@@ -76,6 +76,10 @@ nav {
   text-decoration: none;
 }
 
+/* Hamburger: hidden by default (desktop), styled and shown on mobile below */
+.nav-toggle-checkbox { display: none; }
+.nav-toggle-label { display: none; }
+
 /* ===== Hero ===== */
 .hero {
   background: var(--navy);
@@ -854,16 +858,131 @@ footer .footer-socials svg { width: 20px; height: 20px; }
 
 /* ===== Responsive ===== */
 @media (max-width: 720px) {
-  nav {
-    height: auto;
-    padding: 10px 16px;
-    flex-wrap: wrap;
-    gap: 6px 12px;
+  /* Hamburger icon on the right */
+  .nav-toggle-label {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 20px;
+    cursor: pointer;
+    padding: 0;
+    background: transparent;
+    border: none;
   }
-  .nav-links { gap: 10px 14px; flex-wrap: wrap; }
-  .nav-links a { font-size: 0.82rem; }
-  .nav-brand { font-size: 1rem; }
+  .nav-toggle-label span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  /* Hide nav links by default on mobile; reveal on checkbox:checked */
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    left: 0;
+    background: var(--navy);
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  }
+  .nav-links li {
+    width: 100%;
+  }
+  .nav-links a {
+    display: block;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+  .nav-toggle-checkbox:checked ~ .nav-links { display: flex; }
+  /* Animate hamburger into an X when open */
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
 }
+
+/* --- Mobile career table: stack each row as a card --- */
+@media (max-width: 640px) {
+  #career-table,
+  #career-table thead,
+  #career-table tbody,
+  #career-table tr,
+  #career-table td {
+    display: block;
+    width: 100%;
+  }
+  #career-table thead { display: none; }
+  .table-wrap { border: none; overflow: visible; }
+  #career-table tbody tr {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px 6px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  #career-table tbody tr:last-child td { border-bottom: none; }
+  #career-table td {
+    border-bottom: none !important;
+    padding: 6px 0;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+  #career-table td::before {
+    content: attr(data-label);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  /* Delete row: push to top right, no label */
+  #career-table td.row-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 0;
+    display: block;
+    width: auto;
+  }
+  #career-table td.row-actions::before { display: none; }
+  #career-table td.row-actions .icon-btn {
+    font-size: 1.1rem;
+  }
+  .cell-input {
+    background: var(--white);
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+  }
+}
+
+/* Dark-mode tweaks for the mobile card layout */
+@media (prefers-color-scheme: dark) and (max-width: 640px) {
+  #career-table tbody tr {
+    background: #0a1420;
+    border-color: #1f3449;
+  }
+  .cell-input {
+    background: #142538;
+    border-color: #1f3449;
+    color: #e8eef5;
+  }
+}
+
 @media (max-width: 600px) {
   .privacy-cta { flex-direction: column; text-align: center; }
   .btn-outline { margin-left: 0; margin-top: 10px; }

@@ -175,11 +175,11 @@
         state.career_stages.forEach((stage, i) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><input type="number" class="cell-input" value="${stage.start_age}" min="14" max="90" step="1" data-idx="${i}" data-field="start_age"></td>
-                <td><input type="text"   class="cell-input cell-title" value="${escapeHtml(stage.title)}" placeholder="e.g. Senior Engineer" data-idx="${i}" data-field="title"></td>
-                <td><input type="number" class="cell-input cell-money" value="${stage.salary}" min="0" step="1000" data-idx="${i}" data-field="salary"></td>
-                <td><input type="number" class="cell-input cell-pct" value="${(stage.contribution_pct * 100).toFixed(0)}" min="0" max="90" step="1" data-idx="${i}" data-field="contribution_pct"></td>
-                <td><input type="number" class="cell-input cell-pct" value="${(stage.employer_match_pct * 100).toFixed(1)}" min="0" max="15" step="0.5" data-idx="${i}" data-field="employer_match_pct"></td>
+                <td data-label="Age"><input type="number" class="cell-input" value="${stage.start_age}" min="14" max="90" step="1" data-idx="${i}" data-field="start_age"></td>
+                <td data-label="Title"><input type="text"   class="cell-input cell-title" value="${escapeHtml(stage.title)}" placeholder="e.g. Senior Engineer" data-idx="${i}" data-field="title"></td>
+                <td data-label="Salary"><input type="number" class="cell-input cell-money" value="${stage.salary}" min="0" step="1000" data-idx="${i}" data-field="salary"></td>
+                <td data-label="Contribution %"><input type="number" class="cell-input cell-pct" value="${(stage.contribution_pct * 100).toFixed(0)}" min="0" max="90" step="1" data-idx="${i}" data-field="contribution_pct"></td>
+                <td data-label="Employer match %"><input type="number" class="cell-input cell-pct" value="${(stage.employer_match_pct * 100).toFixed(1)}" min="0" max="15" step="0.5" data-idx="${i}" data-field="employer_match_pct"></td>
                 <td class="row-actions">
                     <button type="button" class="icon-btn" data-action="delete" data-idx="${i}" title="Delete stage">✕</button>
                 </td>`;
