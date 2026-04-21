@@ -18,9 +18,13 @@
     // given today's valuations; "Cautious" models a permanently
     // lower-return regime.
     const RETURN_OUTLOOK_PRESETS = {
+        Optimistic: {
+            stocks: 0.090, bonds: 0.030, cash: 0.010,
+            description: "What Dave Ramsey famously claims (roughly 12% nominal / 9% real for stocks). Controversial and widely considered unrealistic by professional planners, but if you want to see what the \"good growth stock mutual funds\" pitch produces, here you go.",
+        },
         Historical: {
             stocks: 0.068, bonds: 0.020, cash: 0.003,
-            description: "20th-century US historical averages. What the last 100 years delivered. Arguably optimistic relative to today's valuations.",
+            description: "20th-century US historical averages. What the last 100 years delivered. A reasonable middle ground, though arguably optimistic given today's valuations.",
         },
         'Forward-looking': {
             stocks: 0.045, bonds: 0.020, cash: 0.003,
