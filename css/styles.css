@@ -574,11 +574,15 @@ footer .footer-socials svg { width: 20px; height: 20px; }
 
 #career-table th,
 #career-table td {
-  padding: 10px 12px;
+  padding: 10px 6px;
   border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: middle;
 }
+#career-table th:first-child,
+#career-table td:first-child { padding-left: 12px; }
+#career-table th:last-child,
+#career-table td:last-child { padding-right: 12px; }
 
 #career-table th {
   background: var(--bg);
@@ -592,28 +596,52 @@ footer .footer-socials svg { width: 20px; height: 20px; }
 
 #career-table tbody tr:last-child td { border-bottom: none; }
 
-#career-table .col-age { width: 72px; }
-#career-table .col-salary { width: 130px; }
-#career-table .col-pct { width: 120px; }
-#career-table .col-actions { width: 44px; text-align: center; }
+#career-table .col-age { width: 92px; }
+#career-table .col-salary { width: 136px; }
+#career-table .col-pct { width: 126px; }
+#career-table .col-actions { width: 40px; text-align: center; }
 
 .cell-input {
   width: 100%;
-  padding: 6px 8px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
   font-family: inherit;
   font-size: 0.92rem;
   color: var(--text);
-  background: transparent;
-  transition: border-color 0.15s, background 0.15s;
+  background: var(--white);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 
+.cell-input:hover {
+  border-color: var(--border);
+}
+
+.cell-input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.12);
+}
+
+/* Wrapped input with $ / % affixes: the wrapper shows the border so
+   the prefix, input, and suffix read as one cohesive field. */
 .cell-group {
   display: inline-flex;
   align-items: center;
   width: 100%;
-  gap: 2px;
+  gap: 4px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  background: var(--white);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cell-group:hover { border-color: var(--border); }
+
+.cell-group:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.12);
 }
 
 .cell-group .cell-prefix,
@@ -624,15 +652,12 @@ footer .footer-socials svg { width: 20px; height: 20px; }
   flex-shrink: 0;
 }
 
-.cell-group .cell-input { flex: 1; }
-
-.cell-input:hover { background: var(--bg); }
-
-.cell-input:focus {
-  outline: none;
-  border-color: var(--green);
-  background: var(--white);
-  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.12);
+.cell-group .cell-input {
+  flex: 1;
+  border: none !important;
+  padding: 6px 0;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .row-actions { text-align: center; }
@@ -852,9 +877,17 @@ footer .footer-socials svg { width: 20px; height: 20px; }
     border-bottom-color: #1f3449;
   }
   #career-table td { border-bottom-color: #1f3449; }
-  .cell-input { color: #e8eef5; }
-  .cell-input:hover { background: #0a1420; }
-  .cell-input:focus { background: #142538; }
+  .cell-input {
+    color: #e8eef5;
+    background: #0a1420;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .cell-input:hover { border-color: #1f3449; }
+  .cell-group {
+    background: #0a1420;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .cell-group:hover { border-color: #1f3449; }
   .btn-ghost {
     background: #0a1420;
     color: #e8eef5;
