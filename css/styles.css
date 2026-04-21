@@ -587,14 +587,15 @@ footer .footer-socials svg { width: 20px; height: 20px; }
   text-transform: uppercase;
   font-size: 0.72rem;
   letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
 #career-table tbody tr:last-child td { border-bottom: none; }
 
-#career-table .col-age { width: 80px; }
-#career-table .col-salary { width: 140px; }
-#career-table .col-pct { width: 140px; }
-#career-table .col-actions { width: 50px; text-align: center; }
+#career-table .col-age { width: 72px; }
+#career-table .col-salary { width: 130px; }
+#career-table .col-pct { width: 120px; }
+#career-table .col-actions { width: 44px; text-align: center; }
 
 .cell-input {
   width: 100%;
@@ -607,6 +608,23 @@ footer .footer-socials svg { width: 20px; height: 20px; }
   background: transparent;
   transition: border-color 0.15s, background 0.15s;
 }
+
+.cell-group {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.cell-group .cell-prefix,
+.cell-group .cell-suffix {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.cell-group .cell-input { flex: 1; }
 
 .cell-input:hover { background: var(--bg); }
 
@@ -913,8 +931,11 @@ footer .footer-socials svg { width: 20px; height: 20px; }
   }
 }
 
-/* --- Mobile career table: stack each row as a card --- */
-@media (max-width: 640px) {
+/* --- Narrow-viewport career table: stack each row as a card ---
+   The breakpoint matches the hamburger nav breakpoint so the desktop
+   table layout doesn't get a cramped "in between" window where the
+   Title column collapses to a few pixels. */
+@media (max-width: 720px) {
   #career-table,
   #career-table thead,
   #career-table tbody,
@@ -938,7 +959,7 @@ footer .footer-socials svg { width: 20px; height: 20px; }
     border-bottom: none !important;
     padding: 6px 0;
     display: grid;
-    grid-template-columns: 130px 1fr;
+    grid-template-columns: 150px 1fr;
     gap: 10px;
     align-items: center;
   }
@@ -971,7 +992,7 @@ footer .footer-socials svg { width: 20px; height: 20px; }
 }
 
 /* Dark-mode tweaks for the mobile card layout */
-@media (prefers-color-scheme: dark) and (max-width: 640px) {
+@media (prefers-color-scheme: dark) and (max-width: 720px) {
   #career-table tbody tr {
     background: #0a1420;
     border-color: #1f3449;

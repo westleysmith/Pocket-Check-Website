@@ -176,10 +176,10 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td data-label="Age"><input type="number" class="cell-input" value="${stage.start_age}" min="14" max="90" step="1" data-idx="${i}" data-field="start_age"></td>
-                <td data-label="Title"><input type="text"   class="cell-input cell-title" value="${escapeHtml(stage.title)}" placeholder="e.g. Senior Engineer" data-idx="${i}" data-field="title"></td>
-                <td data-label="Salary"><input type="number" class="cell-input cell-money" value="${stage.salary}" min="0" step="1000" data-idx="${i}" data-field="salary"></td>
-                <td data-label="Contribution %"><input type="number" class="cell-input cell-pct" value="${(stage.contribution_pct * 100).toFixed(0)}" min="0" max="90" step="1" data-idx="${i}" data-field="contribution_pct"></td>
-                <td data-label="Employer match %"><input type="number" class="cell-input cell-pct" value="${(stage.employer_match_pct * 100).toFixed(1)}" min="0" max="15" step="0.5" data-idx="${i}" data-field="employer_match_pct"></td>
+                <td data-label="Title"><input type="text" class="cell-input cell-title" value="${escapeHtml(stage.title)}" placeholder="e.g. Senior Engineer" data-idx="${i}" data-field="title"></td>
+                <td data-label="Salary"><span class="cell-group"><span class="cell-prefix">$</span><input type="number" class="cell-input cell-money" value="${stage.salary}" min="0" step="1000" data-idx="${i}" data-field="salary"></span></td>
+                <td data-label="Contribution %"><span class="cell-group"><input type="number" class="cell-input cell-pct" value="${(stage.contribution_pct * 100).toFixed(0)}" min="0" max="90" step="1" data-idx="${i}" data-field="contribution_pct"><span class="cell-suffix">%</span></span></td>
+                <td data-label="Employer match %"><span class="cell-group"><input type="number" class="cell-input cell-pct" value="${(stage.employer_match_pct * 100).toFixed(1)}" min="0" max="15" step="0.5" data-idx="${i}" data-field="employer_match_pct"><span class="cell-suffix">%</span></span></td>
                 <td class="row-actions">
                     <button type="button" class="icon-btn" data-action="delete" data-idx="${i}" title="Delete stage">✕</button>
                 </td>`;
@@ -252,11 +252,14 @@
     function brandPlotLayout() {
         const isDark = window.matchMedia
             && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isNarrow = window.matchMedia
+            && window.matchMedia('(max-width: 640px)').matches;
         return {
             font: { color: isDark ? '#e8eef5' : '#1a1a2e' },
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
             grid: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+            isNarrow,
         };
     }
 
@@ -298,12 +301,14 @@
                 hovertemplate: 'Age %{x}<br>Contributed: $%{y:,.0f}<extra></extra>',
             },
         ];
+        const leftMargin = layout.isNarrow ? 48 : 90;
+        const rightMargin = layout.isNarrow ? 12 : 20;
         const fig = {
-            height: 460,
+            height: layout.isNarrow ? 380 : 460,
             hovermode: 'x unified',
             xaxis: { title: 'Age', gridcolor: layout.grid },
             yaxis: {
-                title: { text: "Portfolio (today's $)", standoff: 12 },
+                title: layout.isNarrow ? '' : { text: "Portfolio (today's $)", standoff: 12 },
                 gridcolor: layout.grid,
                 tickformat: '$.2s',
                 tickprefix: '',
@@ -311,8 +316,8 @@
             plot_bgcolor: layout.plot_bgcolor,
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
-            margin: { l: 90, r: 20, t: 30, b: 60 },
-            legend: { orientation: 'h', y: -0.2 },
+            margin: { l: leftMargin, r: rightMargin, t: 30, b: 60 },
+            legend: { orientation: 'h', y: layout.isNarrow ? -0.25 : -0.2 },
             shapes: [{
                 type: 'line', x0: retirementAge, x1: retirementAge,
                 y0: 0, y1: 1, yref: 'paper',
@@ -342,6 +347,8 @@
             return;
         }
         const layout = brandPlotLayout();
+        const salLeftMargin = layout.isNarrow ? 48 : 90;
+        const salRightMargin = layout.isNarrow ? 12 : 20;
         Plotly.newPlot('chart-salary', [{
             x: workingAges, y: workingSalaries,
             mode: 'lines+markers',
@@ -349,17 +356,17 @@
             marker: { color: '#2ecc71', size: 8 },
             hovertemplate: 'Age %{x}<br>Salary: $%{y:,.0f}<extra></extra>',
         }], {
-            height: 300,
+            height: layout.isNarrow ? 260 : 300,
             xaxis: { title: 'Age', gridcolor: layout.grid },
             yaxis: {
-                title: { text: "Salary (today's $)", standoff: 12 },
+                title: layout.isNarrow ? '' : { text: "Salary (today's $)", standoff: 12 },
                 gridcolor: layout.grid,
                 tickformat: '$.2s',
             },
             plot_bgcolor: layout.plot_bgcolor,
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
-            margin: { l: 90, r: 20, t: 20, b: 50 },
+            margin: { l: salLeftMargin, r: salRightMargin, t: 20, b: 50 },
             showlegend: false,
         }, { displayModeBar: false, responsive: true });
     }
