@@ -506,6 +506,7 @@
         }).then((gd) => {
             attachAgeHeaderRewriter(gd);
             attachResponsiveResize(gd);
+            bindTouchHover(gd);
         });
     }
 
@@ -518,6 +519,34 @@
     //
     // In unified-hover mode the box is rendered as a legend-like group:
     // `.hoverlayer .legend .legendtitletext` holds the x-value header.
+    // Mobile touch-to-hover: when the user touches / drags horizontally
+    // across the chart, compute the age (x-axis data value) under their
+    // finger and trigger Plotly's unified hover there. Calling
+    // preventDefault on the touch events stops the browser from doing
+    // native pinch-zoom or rubber-band scrolling on the SVG. Vertical
+    // swipes still pass through (touch-action: pan-y in CSS) so the
+    // page can scroll normally.
+    function bindTouchHover(gd) {
+        if (!gd) return;
+        function computeXval(clientX) {
+            const rect = gd.getBoundingClientRect();
+            const xaxis = gd._fullLayout && gd._fullLayout.xaxis;
+            if (!xaxis) return null;
+            const rel = clientX - rect.left - xaxis._offset;
+            if (rel < 0 || rel > xaxis._length) return null;
+            return xaxis.p2c(rel);
+        }
+        function handle(e) {
+            if (!e.touches || e.touches.length === 0) return;
+            const xval = computeXval(e.touches[0].clientX);
+            if (xval === null) return;
+            window.Plotly.Fx.hover(gd, { xval: xval }, 'xy');
+            e.preventDefault();
+        }
+        gd.addEventListener('touchstart', handle, { passive: false });
+        gd.addEventListener('touchmove',  handle, { passive: false });
+    }
+
     // After Plotly renders, explicitly resize once the next frame paints
     // so the SVG fits the container. Also resizes on window resize /
     // orientation change so rotating a phone doesn't leave the chart
@@ -622,6 +651,7 @@
         }).then((gd) => {
             attachAgeHeaderRewriter(gd);
             attachResponsiveResize(gd);
+            bindTouchHover(gd);
         });
     }
 
