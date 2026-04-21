@@ -872,7 +872,20 @@ footer .footer-socials svg { width: 20px; height: 20px; }
 #chart-trajectory,
 #chart-salary {
   width: 100%;
+  max-width: 100%;
   min-height: 300px;
+  overflow: hidden;
+  /* Prevent touch-action zoom on mobile so swipes scroll the page
+     instead of the browser trying to pinch-zoom the SVG. */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+#chart-trajectory .js-plotly-plot,
+#chart-salary .js-plotly-plot,
+#chart-trajectory .plot-container,
+#chart-salary .plot-container {
+  max-width: 100%;
 }
 
 .planner-details {

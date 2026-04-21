@@ -428,16 +428,6 @@
         //       the full 10-90 band.
         const traces = [
             {
-                // Invisible trace whose only job is to render an
-                // "AGE: 65" header row at the top of the unified hover
-                // tooltip. Plotly's built-in x header is a bare number
-                // and its d3-format-only hoverformat can't prepend text.
-                x: result.ages, y: result.p50,
-                mode: 'none',
-                showlegend: false,
-                hovertemplate: '<b>AGE: %{x}</b><extra></extra>',
-            },
-            {
                 x: result.ages, y: result.p90,
                 mode: 'lines', line: { width: 0 },
                 name: '90th pct', showlegend: false,
@@ -491,6 +481,7 @@
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
             hoverlabel: layout.hoverlabel,
+            dragmode: false,
             margin: { l: leftMargin, r: rightMargin, t: 30, b: 60 },
             legend: { orientation: 'h', y: layout.isNarrow ? -0.25 : -0.2 },
             shapes: [{
@@ -504,7 +495,81 @@
                 yshift: 12, font: { color: layout.font.color, size: 12 },
             }],
         };
-        Plotly.newPlot('chart-trajectory', traces, fig, { displayModeBar: false, responsive: true });
+        Plotly.newPlot('chart-trajectory', traces, fig, {
+            displayModeBar: false,
+            responsive: true,
+            scrollZoom: false,
+            doubleClick: false,
+            showTips: false,
+            displaylogo: false,
+            staticPlot: false,
+        }).then((gd) => {
+            attachAgeHeaderRewriter(gd);
+            attachResponsiveResize(gd);
+        });
+    }
+
+    // Plotly's unified hover x-header is always a bare number (its
+    // hoverformat accepts only d3 format strings, no text prefix). We
+    // rewrite it to "AGE: 62" in the DOM whenever the hoverlayer
+    // changes. Using a MutationObserver so we catch every hover state,
+    // including touch interactions where plotly_hover events don't fire
+    // reliably.
+    //
+    // In unified-hover mode the box is rendered as a legend-like group:
+    // `.hoverlayer .legend .legendtitletext` holds the x-value header.
+    // After Plotly renders, explicitly resize once the next frame paints
+    // so the SVG fits the container. Also resizes on window resize /
+    // orientation change so rotating a phone doesn't leave the chart
+    // wider than the viewport.
+    function attachResponsiveResize(gd) {
+        if (!gd) return;
+        const doResize = () => {
+            if (gd && gd.offsetParent !== null && window.Plotly) {
+                window.Plotly.Plots.resize(gd);
+            }
+        };
+        requestAnimationFrame(doResize);
+        // Register a single shared resize listener (idempotent by key)
+        if (!window.__pcResizeBound) {
+            window.__pcResizeBound = true;
+            const all = ['chart-trajectory', 'chart-salary'];
+            let pending = false;
+            window.addEventListener('resize', () => {
+                if (pending) return;
+                pending = true;
+                requestAnimationFrame(() => {
+                    pending = false;
+                    all.forEach((id) => {
+                        const el = document.getElementById(id);
+                        if (el && el.data && window.Plotly) {
+                            window.Plotly.Plots.resize(el);
+                        }
+                    });
+                });
+            });
+        }
+    }
+
+    function attachAgeHeaderRewriter(gd) {
+        if (!gd) return;
+        const hoverLayer = gd.querySelector('.hoverlayer');
+        if (!hoverLayer) return;
+        const rewrite = () => {
+            const headers = hoverLayer.querySelectorAll('.legendtitletext');
+            headers.forEach((h) => {
+                const raw = (h.textContent || '').trim();
+                if (!raw || raw.startsWith('AGE')) return;
+                if (/^-?\d{1,3}$/.test(raw)) {
+                    h.textContent = 'AGE: ' + raw;
+                }
+            });
+        };
+        const observer = new MutationObserver(rewrite);
+        observer.observe(hoverLayer, {
+            childList: true, subtree: true, characterData: true,
+        });
+        rewrite();
     }
 
     function renderSalaryChart(result) {
@@ -543,10 +608,21 @@
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
             hoverlabel: layout.hoverlabel,
+            dragmode: false,
             margin: { l: salLeftMargin, r: salRightMargin, t: 20, b: 50 },
             showlegend: false,
             hovermode: 'x unified',
-        }, { displayModeBar: false, responsive: true });
+        }, {
+            displayModeBar: false,
+            responsive: true,
+            scrollZoom: false,
+            doubleClick: false,
+            showTips: false,
+            displaylogo: false,
+        }).then((gd) => {
+            attachAgeHeaderRewriter(gd);
+            attachResponsiveResize(gd);
+        });
     }
 
     function onRun() {
