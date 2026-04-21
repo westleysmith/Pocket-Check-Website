@@ -1,0 +1,12 @@
+# Claude Code local dev config - not part of the site
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retirement Planner | Pocket Check</title>
+  <meta name="description" content="Monte Carlo retirement projection with career progression, tax-aware withdrawals, and compound-growth visualization. Runs 100% in your browser - your data never leaves your device." />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-brand">
+      <span class="dot"></span> Pocket Check
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="retirement-planner.html" class="active">Retirement Planner</a></li>
+    </ul>
+  </nav>
+
+  <header class="policy-header">
+    <h1>Retirement Planner</h1>
+    <p class="policy-lead">Map out your career and see 10,000 simulated futures. All numbers in today's dollars. Runs 100% in your browser - your data never leaves your device.</p>
+  </header>
+
+  <main class="planner">
+
+    <section class="planner-card">
+      <h2>Your basics</h2>
+      <div class="field-grid">
+        <label class="field">
+          <span>Current age</span>
+          <input type="number" data-bind="current_age" min="16" max="90" step="1" />
+        </label>
+        <label class="field">
+          <span>Retirement age</span>
+          <input type="number" data-bind="retirement_age" min="17" max="95" step="1" />
+        </label>
+        <label class="field">
+          <span>Plan through age</span>
+          <input type="number" data-bind="end_age" min="18" max="110" step="1" />
+        </label>
+      </div>
+
+      <h2>Current balances</h2>
+      <p class="caption">The money you already have saved, split by tax treatment.</p>
+      <div class="field-grid">
+        <label class="field">
+          <span>Taxable brokerage</span>
+          <div class="money-wrap">
+            <span class="money-prefix">$</span>
+            <input type="number" data-bind="balance_taxable" min="0" step="1000" />
+          </div>
+        </label>
+        <label class="field">
+          <span>Tax-deferred (401k / IRA)</span>
+          <div class="money-wrap">
+            <span class="money-prefix">$</span>
+            <input type="number" data-bind="balance_tax_deferred" min="0" step="1000" />
+          </div>
+        </label>
+        <label class="field">
+          <span>Tax-free (Roth / HSA)</span>
+          <div class="money-wrap">
+            <span class="money-prefix">$</span>
+            <input type="number" data-bind="balance_tax_free" min="0" step="1000" />
+          </div>
+        </label>
+      </div>
+
+      <h2>In retirement</h2>
+      <div class="field-grid">
+        <label class="field">
+          <span>Annual spending (today's $)</span>
+          <div class="money-wrap">
+            <span class="money-prefix">$</span>
+            <input type="number" data-bind="annual_retirement_spending" min="0" step="1000" />
+          </div>
+        </label>
+        <label class="field">
+          <span>Effective tax rate</span>
+          <div class="suffix-wrap">
+            <input type="number" data-bind="retirement_tax_rate" data-scale="100" min="0" max="50" step="1" />
+            <span class="suffix">%</span>
+          </div>
+        </label>
+        <label class="field">
+          <span>Social Security (annual)</span>
+          <div class="money-wrap">
+            <span class="money-prefix">$</span>
+            <input type="number" data-bind="social_security_annual" min="0" step="500" />
+          </div>
+        </label>
+        <label class="field">
+          <span>SS claim age</span>
+          <input type="number" data-bind="social_security_claim_age" min="62" max="70" step="1" />
+        </label>
+      </div>
+
+      <h2>Risk profile</h2>
+      <div class="risk-buttons" id="risk-buttons"></div>
+      <p class="caption" id="risk-description"></p>
+      <p class="caption" id="risk-now"></p>
+      <p class="caption" id="risk-retirement"></p>
+    </section>
+
+    <section class="planner-card">
+      <h2>Career stages</h2>
+      <p class="caption">One row per phase of your career. Salary is flat within a stage. For a raise or role change, add another row at that age. Rows are auto-sorted by age when you run the simulation.</p>
+
+      <div class="table-wrap">
+        <table id="career-table">
+          <thead>
+            <tr>
+              <th class="col-age">Age</th>
+              <th>Title</th>
+              <th class="col-salary">Salary</th>
+              <th class="col-pct">Contribution %</th>
+              <th class="col-pct">Employer match %</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <button type="button" class="btn btn-ghost" id="add-stage-btn">+ Add stage</button>
+    </section>
+
+    <div class="run-row">
+      <button type="button" class="btn btn-primary btn-run" id="run-btn">Run projection</button>
+      <button type="button" class="btn btn-ghost" id="reset-btn">Reset to defaults</button>
+    </div>
+    <p class="caption run-timing" id="run-timing"></p>
+
+    <section class="planner-card" id="results" hidden>
+      <h2>Results</h2>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Success rate</div>
+          <div class="metric-value" id="metric-success">-</div>
+          <div class="metric-help">Fraction of simulations that reach your plan end-age without depleting.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Median final balance</div>
+          <div class="metric-value" id="metric-median">-</div>
+          <div class="metric-help">Middle outcome. Half of simulations end with more, half with less.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">10th percentile</div>
+          <div class="metric-value" id="metric-p10">-</div>
+          <div class="metric-help">Bad-case outcome. Only 1 in 10 simulations end below this.</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">90th percentile</div>
+          <div class="metric-value" id="metric-p90">-</div>
+          <div class="metric-help">Good-case outcome. Only 1 in 10 simulations end above this.</div>
+        </div>
+      </div>
+
+      <h3>Portfolio trajectory (real dollars)</h3>
+      <p class="caption">Green band is the range of outcomes across 10,000 simulations. The <strong>yellow dashed line</strong> is the total you actually put in. The gap between yellow and green is compound growth.</p>
+      <div id="chart-trajectory"></div>
+
+      <details class="planner-details">
+        <summary>Salary by age</summary>
+        <div id="chart-salary"></div>
+      </details>
+
+      <details class="planner-details">
+        <summary>Assumptions and limitations</summary>
+        <ul class="assumption-list">
+          <li><strong>All figures are in real (today's) dollars.</strong> Inflation is not added back.</li>
+          <li><strong>Real return assumptions</strong> (annual): stocks 6.8% / σ=17%, bonds 2.0% / σ=6%, cash 0.3% / σ=1%. Stock-bond correlation 0.10.</li>
+          <li><strong>Withdrawal order in retirement:</strong> taxable, then tax-deferred (grossed up for taxes), then tax-free.</li>
+          <li><strong>Taxes:</strong> a single effective rate is applied to tax-deferred withdrawals only. No bracket logic, RMDs, or state tax.</li>
+          <li><strong>Contribution routing:</strong> 70% of your savings into tax-deferred, 30% into taxable. Employer match all goes tax-deferred.</li>
+          <li><strong>Salary is flat within a stage.</strong> To model a raise, add another stage.</li>
+          <li><strong>Allocation:</strong> same across all account types. Linear glide path from now to retirement age.</li>
+          <li><strong>Social Security:</strong> fixed real annual benefit starting at claim age.</li>
+          <li><strong>Not modeled:</strong> health shocks, variable spending, Roth conversions, RMD-forced withdrawals.</li>
+        </ul>
+        <p class="caption disclaimer">This tool is for educational planning only and is not financial advice. Talk to a licensed advisor before making major financial decisions.</p>
+      </details>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-socials">
+      <a href="https://instagram.com/pocketcheckapp" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://x.com/pocketcheckapp" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      </a>
+      <a href="https://tiktok.com/@pocketcheckapp" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.79a4.85 4.85 0 01-1.02-.1z"/></svg>
+      </a>
+      <a href="https://reddit.com/u/pocketcheckapp" target="_blank" rel="noopener" aria-label="Reddit">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+      </a>
+      <a href="mailto:pocketcheckapp@gmail.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="support.html">Support</a>
+      <a href="retirement-planner.html">Retirement Planner</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+      <a href="data-retention-policy.html">Data Retention Policy</a>
+      <a href="information-security-policy.html">Information Security Policy</a>
+    </div>
+    <p>&copy; 2026 Pocket Check LLC. All rights reserved.</p>
+  </footer>
+
+  <script src="js/simulation.js"></script>
+  <script src="js/retirement-planner.js"></script>
+</body>
+</html>
