@@ -241,17 +241,49 @@
 
       <details class="planner-details">
         <summary>Assumptions and limitations</summary>
+
+        <h4 class="assumption-heading">Always on</h4>
         <ul class="assumption-list">
-          <li><strong>All figures are in real (today's) dollars.</strong> Inflation is not added back.</li>
-          <li><strong>Real return assumptions</strong> (annual): stocks 6.8% / σ=17%, bonds 2.0% / σ=6%, cash 0.3% / σ=1%. Stock-bond correlation 0.10.</li>
+          <li><strong>Real (today's) dollars throughout.</strong> Inflation is not added back.</li>
+          <li><strong>10,000 Monte Carlo paths.</strong> Each path samples a different sequence of annual returns, so the median / 10th / 90th percentile lines are the range of outcomes, not guaranteed outcomes.</li>
+          <li><strong>Lognormal returns.</strong> Growth each year is exp(log-return) rather than 1+return, so balances can never go below zero and the compounding captures volatility drag correctly.</li>
+          <li><strong>Fat tails on stocks.</strong> Stock shocks are sampled from Student-t with 6 degrees of freedom, so large crashes show up as often as they do historically. Bonds and cash use normal samples.</li>
+          <li><strong>Stock/bond correlation 0.10</strong>, cash independent. Correlation is constant (real-world correlations shift - 2022 was a notable example).</li>
           <li><strong>Withdrawal order in retirement:</strong> taxable, then tax-deferred (grossed up for taxes), then tax-free.</li>
-          <li><strong>Taxes:</strong> a single effective rate is applied to tax-deferred withdrawals only. No bracket logic, RMDs, or state tax.</li>
           <li><strong>Contribution routing:</strong> 70% of your savings into tax-deferred, 30% into taxable. Employer match all goes tax-deferred.</li>
-          <li><strong>Salary is flat within a stage.</strong> To model a raise, add another stage.</li>
-          <li><strong>Allocation:</strong> same across all account types. Linear glide path from now to retirement age.</li>
-          <li><strong>Social Security:</strong> fixed real annual benefit starting at claim age.</li>
-          <li><strong>Not modeled:</strong> health shocks, variable spending, Roth conversions, RMD-forced withdrawals.</li>
+          <li><strong>Salary is flat within a career stage.</strong> Add another stage to model a raise or role change.</li>
+          <li><strong>Same allocation across all account types.</strong> Linear glide path from current to retirement allocation.</li>
         </ul>
+
+        <h4 class="assumption-heading">Basic mode</h4>
+        <ul class="assumption-list">
+          <li><strong>Single effective tax rate</strong> applied to tax-deferred withdrawals.</li>
+          <li><strong>Social Security</strong> = the flat annual benefit you enter, starting at claim age.</li>
+          <li><strong>Return assumptions:</strong> stocks 6.8% real, bonds 2.0% real, cash 0.3% real (20th-century US historical averages).</li>
+        </ul>
+
+        <h4 class="assumption-heading">Advanced mode adds</h4>
+        <ul class="assumption-list">
+          <li><strong>Return outlook picker:</strong> Optimistic, Historical, Forward-looking, or Cautious. Shifts the mean return of each asset class; the full Monte Carlo still runs.</li>
+          <li><strong>2026 federal tax brackets</strong> plus standard deduction and filing status (single / MFJ). Replaces the flat rate. Ordinary-income brackets only - no separate LTCG / qualified-dividends treatment, no NIIT, no IRMAA.</li>
+          <li><strong>State tax</strong> as a flat rate on ordinary income.</li>
+          <li><strong>Portfolio expense ratio</strong> (fee drag) subtracted from each year's return.</li>
+          <li><strong>Social Security claim-age adjustment:</strong> your PIA times a multiplier (62 = 70%, 67 = 100% FRA, 70 = 124%).</li>
+          <li><strong>RMDs from age 73</strong> using the IRS Uniform Lifetime Table. Forced withdrawal from tax-deferred accounts even if you don't need the cash.</li>
+        </ul>
+
+        <h4 class="assumption-heading">Not modeled (yet)</h4>
+        <ul class="assumption-list">
+          <li><strong>Healthcare and long-term care.</strong> Probably the largest missing risk. Pre-Medicare premiums, LTC events, and IRMAA surcharges are all absent.</li>
+          <li><strong>Variable retirement spending.</strong> Research (Blanchett) shows spending follows a "smile" - higher in the go-go 60s, lower in 70s, higher again with late-life healthcare. This tool uses flat real spending.</li>
+          <li><strong>Roth conversion optimizer.</strong> The tax valley between retirement and RMDs/SS is where big conversion savings live; not modeled.</li>
+          <li><strong>Asset location.</strong> In reality, putting bonds in tax-deferred and growth in Roth adds 20-50 bps/year. This tool uses the same allocation across all account types.</li>
+          <li><strong>Couples modeling.</strong> One person's ages, income, and Social Security only. No joint-life longevity, survivor benefits, or widow's-penalty tax bracket.</li>
+          <li><strong>Longevity distribution.</strong> "Plan through age" is a fixed number. Real longevity has meaningful variance.</li>
+          <li><strong>Historical sequence stress tests.</strong> Samples are parametric, not bootstrapped from actual bad sequences like 1966, 2000, or 1929.</li>
+          <li><strong>Inflation variability.</strong> Inflation is assumed stable enough that working in real dollars is exact. Different expense categories (healthcare, education) inflate faster than CPI.</li>
+        </ul>
+
         <p class="caption disclaimer">This tool is for educational planning only and is not financial advice. Talk to a licensed advisor before making major financial decisions.</p>
       </details>
     </section>
