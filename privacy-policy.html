@@ -33,7 +33,7 @@
     <h1>Privacy Policy</h1>
     <div class="policy-meta">
       <span><strong>Effective Date:</strong> April 2, 2026</span>
-      <span><strong>Last Updated:</strong> April 2, 2026</span>
+      <span><strong>Last Updated:</strong> April 21, 2026</span>
     </div>
   </header>
 
@@ -75,15 +75,25 @@
     <div class="policy-section" id="section-1">
       <h2>1. Information We Collect</h2>
 
-      <h3>1.1 Information You Provide</h3>
-      <p>When you use Pocket Check, you may provide:</p>
+      <h3>1.1 Account Information</h3>
+      <p>To use Pocket Check, you create an account. Depending on how you sign up, we receive:</p>
+      <ul>
+        <li>Your email address (for email sign-in, password reset, and account recovery)</li>
+        <li>A hashed password, if you register with email and password (we never see the plaintext password)</li>
+        <li>An OAuth identifier and display name, if you sign in with Apple or Google (the provider passes this to us in place of a password)</li>
+        <li>A unique internal user ID that we generate to link your data to your account</li>
+      </ul>
+
+      <h3>1.2 Information You Provide In-App</h3>
+      <p>When you use the App, you may provide:</p>
       <ul>
         <li>Monthly income and budget targets you enter manually</li>
         <li>Bill and expense information you add to the App</li>
+        <li>Savings goals and custom categories you create</li>
         <li>Chat messages and questions you submit to the AI financial coach</li>
       </ul>
 
-      <h3>1.2 Financial Data via Plaid</h3>
+      <h3>1.3 Financial Data via Plaid</h3>
       <p>Pocket Check uses Plaid Technologies, Inc. ("Plaid") to connect to your bank accounts. When you connect your bank:</p>
       <ul>
         <li>Plaid retrieves your account balances and recent transactions on your behalf</li>
@@ -91,13 +101,15 @@
         <li>We do not store your bank login credentials. Those are handled entirely by Plaid</li>
         <li>Plaid's data practices are governed by Plaid's own Privacy Policy, available at <a href="https://plaid.com/legal" target="_blank" rel="noopener">plaid.com/legal</a></li>
       </ul>
+      <p>The specific financial data we receive from Plaid and store on your behalf includes: account names and types, account masks (last four digits), current and available balances, and transactions (amount, merchant name, date, category).</p>
 
-      <h3>1.3 Device Information</h3>
-      <p>We may collect limited device information including:</p>
+      <h3>1.4 Device Information</h3>
+      <p>We collect limited device information only when required for a specific feature:</p>
       <ul>
-        <li>Device token for push notifications (if you grant permission)</li>
-        <li>App usage data for crash reporting and performance monitoring</li>
+        <li>A push notification device token, if you grant notification permission, so we can deliver reminders you explicitly request</li>
+        <li>Basic request metadata (IP address, timestamp) on our backend, used for abuse prevention and rate limiting</li>
       </ul>
+      <p>We do not currently collect app usage analytics or crash reports. If we add analytics or crash reporting in a future version, we will update this policy before enabling them.</p>
     </div>
 
     <!-- Section 2 -->
@@ -117,7 +129,13 @@
     <!-- Section 3 -->
     <div class="policy-section" id="section-3">
       <h2>3. How We Store Your Information</h2>
-      <p>Your financial data and chat history are stored locally on your device using secure storage. When you connect your bank account, a Plaid access token is stored on our backend server hosted by Railway (<a href="https://railway.app" target="_blank" rel="noopener">railway.app</a>) solely for the purpose of retrieving your account data.</p>
+      <p>Your information is stored in two places:</p>
+      <ul>
+        <li><strong>On our servers (Supabase, US region):</strong> your account (email, hashed password, OAuth identifier), your unique user ID, your Plaid access tokens, your transactions synced from Plaid, your custom categories, rules, budgets, savings goals, and bills. This data is encrypted at rest and isolated per user via row-level security so it is only readable by you when signed in.</li>
+        <li><strong>On your device:</strong> your active sign-in session, UI preferences (theme, response length), and a cache of your recent data so the App works when briefly offline.</li>
+      </ul>
+      <p>When you sign out or uninstall the App, the on-device cache is cleared. Your server-side data remains on your account until you delete it (see Section 6.2).</p>
+      <p>Transient requests to third-party services (Plaid, Anthropic, Railway) are described in Section 4.</p>
       <p>We do not sell, rent, or share your personal or financial information with third parties for marketing purposes.</p>
     </div>
 
@@ -137,13 +155,23 @@
       </div>
 
       <div class="third-party-card">
+        <h4>Supabase</h4>
+        <p>Supabase hosts our user database and authentication (US region). Your account, Plaid tokens, synced transactions, categories, rules, budgets, savings goals, and bills are stored here, encrypted at rest, and isolated per user. Supabase's privacy policy is available at <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a>.</p>
+      </div>
+
+      <div class="third-party-card">
         <h4>Railway</h4>
-        <p>Our backend server is hosted on Railway. Your Plaid access token is stored on this server. Railway's privacy policy is available at <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener">railway.app/legal/privacy</a>.</p>
+        <p>Our backend server is hosted on Railway. Railway processes requests between the App and the services listed here (Plaid, Anthropic, Supabase). Railway's privacy policy is available at <a href="https://railway.app/legal/privacy" target="_blank" rel="noopener">railway.app/legal/privacy</a>.</p>
       </div>
 
       <div class="third-party-card">
         <h4>Apple Push Notification Service (APNs)</h4>
         <p>Used to deliver reminders and nudges to your device if you grant notification permission.</p>
+      </div>
+
+      <div class="third-party-card">
+        <h4>Apple and Google Sign-In</h4>
+        <p>If you choose to sign in with Apple or Google, those providers share a user identifier and display name with us so we can create your account. We do not receive your password. Apple's privacy practices are at <a href="https://www.apple.com/legal/privacy" target="_blank" rel="noopener">apple.com/legal/privacy</a>; Google's are at <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>.</p>
       </div>
     </div>
 
@@ -153,8 +181,9 @@
       <p>We take reasonable measures to protect your information:</p>
       <ul>
         <li>Bank credentials are never stored by Pocket Check, only a secure read-only Plaid access token</li>
+        <li>Server-side data is encrypted at rest and access is scoped per user via row-level security</li>
         <li>Sensitive data on your device is stored using encrypted secure storage</li>
-        <li>All communication between the App and our backend uses HTTPS encryption</li>
+        <li>Every API request from the App to our backend is authenticated with your signed-in session token and served over HTTPS</li>
       </ul>
       <p>No method of transmission or storage is 100% secure. While we strive to protect your information, we cannot guarantee absolute security.</p>
     </div>
@@ -167,7 +196,7 @@
       <p>You can disconnect your bank account at any time from within the App. Upon disconnection, your Plaid access token is deleted from our servers and we will no longer retrieve your financial data.</p>
 
       <h3>6.2 Delete Your Data</h3>
-      <p>You can clear all locally stored data at any time from the Settings screen within the App. To request deletion of any data stored on our servers, contact us at the email below.</p>
+      <p>The "Clear All Data" option in the App's Settings screen wipes your on-device cache and disconnects your linked banks. To request permanent deletion of your account and all server-side data (including account, transactions, categories, rules, budgets, goals, and bills), email us at the address in Section 9. We will delete the data within 30 days and confirm by email when complete.</p>
 
       <h3>6.3 Push Notifications</h3>
       <p>You can disable push notifications at any time through your device's Settings app.</p>
