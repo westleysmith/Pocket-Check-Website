@@ -1,0 +1,39 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  
+  <g >
+    
+  <defs>
+    <linearGradient id="bgtransparentM" x1="0" y1="0" x2="900" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+    <linearGradient id="flaptransparentM" x1="220" y1="248" x2="804" y2="368" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3EEEA0"/>
+      <stop offset="100%" stop-color="#1BB870"/>
+    </linearGradient>
+    <linearGradient id="bodyLtransparentM" x1="260" y1="380" x2="512" y2="868" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22C97A"/>
+      <stop offset="100%" stop-color="#0D7A44"/>
+    </linearGradient>
+    <linearGradient id="bodyRtransparentM" x1="512" y1="380" x2="764" y2="760" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#138A50"/>
+      <stop offset="100%" stop-color="#075028"/>
+    </linearGradient>
+    <radialGradient id="glowtransparentM" cx="50%" cy="55%" r="42%">
+      <stop offset="0%" stop-color="#1FDD80" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#1FDD80" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <rect width="1024" height="1024" fill="url(#glowtransparentM)"/>
+  <polygon points="512,390 764,390 764,760 512,868" fill="url(#bodyRtransparentM)"/>
+  <polygon points="260,390 512,390 512,868 260,760" fill="url(#bodyLtransparentM)"/>
+  <rect x="260" y="362" width="504" height="34" fill="black" opacity="0.72"/>
+  <polygon points="236,248 788,248 788,374 236,374" fill="url(#flaptransparentM)"/>
+  <rect x="260" y="374" width="504" height="18" fill="black" opacity="0.90"/>
+  <line x1="512" y1="390" x2="512" y2="868" stroke="#5EFFC0" stroke-width="2.5" opacity="0.22"/>
+  <polygon points="260,390 764,390 764,760 512,868 260,760" fill="none" stroke="#3EE890" stroke-width="2" stroke-linejoin="round" opacity="0.18"/>
+  <polygon points="236,248 788,248 788,374 236,374" fill="none" stroke="#5AFFC0" stroke-width="2" stroke-linejoin="round" opacity="0.18"/>
+
+  </g>
+</svg>

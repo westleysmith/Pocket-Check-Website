@@ -50,12 +50,9 @@ nav {
   text-decoration: none;
 }
 
-.nav-brand .dot {
-  width: 10px;
-  height: 10px;
-  background: var(--green);
-  border-radius: 50%;
-  display: inline-block;
+.nav-logo {
+  height: 36px;
+  width: auto;
 }
 
 .nav-links {
