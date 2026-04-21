@@ -187,8 +187,38 @@
         toggle.addEventListener('change', () => {
             state.advanced_mode = toggle.checked;
             section.hidden = !state.advanced_mode;
+            if (!state.advanced_mode) {
+                // Toggling OFF: wipe advanced-only fields so none of them
+                // leak into the next Run. Also resets the Return outlook
+                // back to Historical so that next time Advanced opens
+                // the user starts at the neutral default.
+                resetAdvancedFields();
+            }
             saveState();
         });
+    }
+
+    function resetAdvancedFields() {
+        state.filing_status   = 'single';
+        state.state_tax_rate  = 0;
+        state.fee_pct         = 0.0005;
+        state.ss_pia_annual   = 0;
+        state.return_outlook  = 'Historical';
+        // Sync any input elements inside the advanced section so their
+        // values match the reset state the next time the section opens.
+        document.querySelectorAll('#advanced-section [data-bind]').forEach((el) => {
+            const key = el.dataset.bind;
+            const scale = parseFloat(el.dataset.scale || '1');
+            const value = state[key];
+            if (value === undefined || value === null) return;
+            if (el.type === 'number' || el.type === 'range') {
+                el.value = value * scale;
+            } else {
+                el.value = value;
+            }
+        });
+        renderReturnOutlook();
+        updateSsBenefitPreview();
     }
 
     // Live preview of the SS benefit applied given the current PIA and
@@ -367,7 +397,13 @@
             plot_bgcolor: 'rgba(0,0,0,0)',
             paper_bgcolor: 'rgba(0,0,0,0)',
             grid: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+            hoverlabel: {
+                bgcolor: isDark ? '#142538' : '#ffffff',
+                bordercolor: isDark ? '#1f3449' : '#e5e7eb',
+                font: { color: isDark ? '#e8eef5' : '#1a1a2e', size: 13 },
+            },
             isNarrow,
+            isDark,
         };
     }
 
@@ -380,33 +416,63 @@
 
     function renderTrajectory(result, retirementAge) {
         const layout = brandPlotLayout();
+        // Order here controls the order rows appear in Plotly's unified
+        // hover tooltip. Chosen top-to-bottom: 90th pct, Median, 10th
+        // pct, Total contributed. The fill between 10th and 90th still
+        // happens because Plotly uses trace order for fills; 10th is
+        // drawn after 90th and fills back to its previous trace.
+        // Trace ordering matters for two things:
+        //   (1) Unified hover lists rows in this order.
+        //   (2) fill: 'tonexty' on p10 fills back to the IMMEDIATELY
+        //       previous trace; putting p10 right after p90 creates
+        //       the full 10-90 band.
         const traces = [
+            {
+                // Invisible trace whose only job is to render an
+                // "AGE: 65" header row at the top of the unified hover
+                // tooltip. Plotly's built-in x header is a bare number
+                // and its d3-format-only hoverformat can't prepend text.
+                x: result.ages, y: result.p50,
+                mode: 'none',
+                showlegend: false,
+                hovertemplate: '<b>AGE: %{x}</b><extra></extra>',
+            },
             {
                 x: result.ages, y: result.p90,
                 mode: 'lines', line: { width: 0 },
                 name: '90th pct', showlegend: false,
-                hoverinfo: 'skip',
+                hovertemplate: '90th pct: <b>$%{y:,.0f}</b><extra></extra>',
             },
             {
                 x: result.ages, y: result.p10,
                 mode: 'lines', line: { width: 0 }, fill: 'tonexty',
                 fillcolor: 'rgba(46,204,113,0.22)',
-                name: '10-90% range',
-                hovertemplate: 'Age %{x}<br>10th: $%{y:,.0f}<extra></extra>',
+                name: '10th pct',
+                showlegend: false,
+                hovertemplate: '10th pct: <b>$%{y:,.0f}</b><extra></extra>',
             },
             {
                 x: result.ages, y: result.p50,
                 mode: 'lines',
                 line: { width: 3, color: '#27ae60' },
                 name: 'Median',
-                hovertemplate: 'Age %{x}<br>Median: $%{y:,.0f}<extra></extra>',
+                hovertemplate: 'Median: <b>$%{y:,.0f}</b><extra></extra>',
             },
             {
                 x: result.ages, y: result.cumulativeContributions,
                 mode: 'lines',
                 line: { width: 2.5, color: '#f1c40f', dash: 'dot' },
                 name: 'Total contributed',
-                hovertemplate: 'Age %{x}<br>Contributed: $%{y:,.0f}<extra></extra>',
+                hovertemplate: 'Contributed: <b>$%{y:,.0f}</b><extra></extra>',
+            },
+            {
+                // Proxy legend entry for the 10-90 fill band. Must come
+                // last so it doesn't participate in fill sequencing.
+                x: [null], y: [null],
+                mode: 'lines',
+                line: { width: 10, color: 'rgba(46,204,113,0.35)' },
+                name: '10-90% range',
+                hoverinfo: 'skip',
             },
         ];
         const leftMargin = layout.isNarrow ? 48 : 90;
@@ -424,6 +490,7 @@
             plot_bgcolor: layout.plot_bgcolor,
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
+            hoverlabel: layout.hoverlabel,
             margin: { l: leftMargin, r: rightMargin, t: 30, b: 60 },
             legend: { orientation: 'h', y: layout.isNarrow ? -0.25 : -0.2 },
             shapes: [{
@@ -462,7 +529,8 @@
             mode: 'lines+markers',
             line: { color: '#27ae60', width: 3 },
             marker: { color: '#2ecc71', size: 8 },
-            hovertemplate: 'Age %{x}<br>Salary: $%{y:,.0f}<extra></extra>',
+            name: 'Salary',
+            hovertemplate: '$%{y:,.0f}<extra></extra>',
         }], {
             height: layout.isNarrow ? 260 : 300,
             xaxis: { title: 'Age', gridcolor: layout.grid },
@@ -474,8 +542,10 @@
             plot_bgcolor: layout.plot_bgcolor,
             paper_bgcolor: layout.paper_bgcolor,
             font: layout.font,
+            hoverlabel: layout.hoverlabel,
             margin: { l: salLeftMargin, r: salRightMargin, t: 20, b: 50 },
             showlegend: false,
+            hovermode: 'x unified',
         }, { displayModeBar: false, responsive: true });
     }
 
